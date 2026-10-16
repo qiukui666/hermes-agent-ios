@@ -1,6 +1,6 @@
 //
 //  NanoMuseRemoteApproval.swift
-//  nanoMuse
+//  Hermes
 //
 //  A task sent to another device of the account ("@Mac tidy the downloads") runs on that
 //  device's Muse. When a step there needs a yes, the question comes back over the hub as an
@@ -242,7 +242,7 @@ struct NanoMuseRemoteApprovalPresenter: ViewModifier {
 
 extension View {
     /// The remote approval card, once, at the root.
-    func nanoMuseRemoteApprovalPresenter() -> some View {
+    func HermesRemoteApprovalPresenter() -> some View {
         modifier(NanoMuseRemoteApprovalPresenter())
     }
 }

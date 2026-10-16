@@ -1,6 +1,6 @@
 //
 //  NanoMuseAgentPage.swift
-//  nanoMuse
+//  Hermes
 //
 //  What opens when the face is tapped: the agent's own page. The face,
 //  large, with a pen badge (Change avatar / Edit name / Your own clip… / Avatar studio…),
@@ -15,11 +15,11 @@ import UIKit
 
 extension Notification.Name {
     /// The face was tapped: present the agent page.
-    static let nanoMuseOpenAgentPage = Notification.Name("nanoMuse.openAgentPage")
+    static let HermesOpenAgentPage = Notification.Name("Hermes.openAgentPage")
     /// Put words into the composer of a chat. object: target id (session or draft); userInfo["text"].
-    static let nanoMuseComposerPrefill = Notification.Name("nanoMuse.composerPrefill")
+    static let HermesComposerPrefill = Notification.Name("Hermes.composerPrefill")
     /// Switch to Goals and scroll to routines.
-    static let nanoMuseOpenRoutines = Notification.Name("nanoMuse.openRoutines")
+    static let HermesOpenRoutines = Notification.Name("Hermes.openRoutines")
 }
 
 // MARK: - Page
@@ -46,7 +46,7 @@ struct NanoMuseAgentPage: View {
 
     private var name: String {
         let n = soulName.trimmingCharacters(in: .whitespaces)
-        return n.isEmpty ? "nanoMuse" : n
+        return n.isEmpty ? "Hermes" : n
     }
 
     var body: some View {
@@ -86,7 +86,7 @@ struct NanoMuseAgentPage: View {
             .sheet(isPresented: $showEditName) {
                 NavigationStack { SoulSettingsView() }
             }
-            .nanoMuseOwnClipHost(clipPicker)
+            .HermesOwnClipHost(clipPicker)
             .onReceive(NotificationCenter.default.publisher(for: .soulMdChanged)) { _ in
                 soulName = SoulStore.cachedMetadata.name
             }
@@ -593,7 +593,7 @@ struct NanoMuseShareCard: View {
         ZStack {
             palette.background
             VStack(spacing: 0) {
-                Text(String(format: AppLocalized("Hi, I'm %@, a personal AI agent. Meet nanoMuse: open source, runs on your phone."), agentName))
+                Text(String(format: AppLocalized("Hi, I'm %@, a personal AI agent. Meet Hermes: open source, runs on your phone."), agentName))
                     .font(.system(size: 42))
                     .foregroundStyle(Color(red: 0.106, green: 0.106, blue: 0.122))
                     .multilineTextAlignment(.center)
@@ -620,8 +620,8 @@ struct NanoMuseShareCard: View {
             }
             VStack(alignment: .leading, spacing: 8) {
                 Spacer()
-                Text("nanoMuse").font(.system(size: 40, weight: .bold)).foregroundStyle(palette.accent)
-                Text(AppLocalized("Your personal AI agent, open source · github.com/nano-muse/nanoMuse"))
+                Text("Hermes").font(.system(size: 40, weight: .bold)).foregroundStyle(palette.accent)
+                Text(AppLocalized("Your personal AI agent, open source · github.com/nano-muse/Hermes"))
                     .font(.system(size: 28)).foregroundStyle(.black.opacity(0.6))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -736,7 +736,7 @@ struct NanoMuseAvatarDoneCard: View {
         .padding(12)
         .background(NanoMuseTones.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .sheet(isPresented: $share) {
-            NanoMuseAvatarShareSheet(agentName: SoulStore.cachedMetadata.name.isEmpty ? "nanoMuse" : SoulStore.cachedMetadata.name)
+            NanoMuseAvatarShareSheet(agentName: SoulStore.cachedMetadata.name.isEmpty ? "Hermes" : SoulStore.cachedMetadata.name)
         }
     }
 }

@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--nanoMuse launch: the blue mark, nothing else, on the system background (light and dark)-->
+        <!--Hermes launch: the blue mark, nothing else, on the system background (light and dark)-->
         <scene sceneID="nmL-sc-001">
             <objects>
                 <viewController id="nmL-vc-001" sceneMemberID="viewController">

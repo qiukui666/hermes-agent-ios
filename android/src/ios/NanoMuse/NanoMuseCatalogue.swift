@@ -1,6 +1,6 @@
 //
 //  NanoMuseCatalogue.swift
-//  nanoMuse
+//  Hermes
 //
 //  The own-key catalogue on the phone (contract C11, docs/parity.md items 32–34): the vendors
 //  a person can bring a key of their own from, what each key covers (chat · screen · pictures ·
@@ -9,7 +9,7 @@
 //  `spend.guidance` (relay 0.21; also beside a `429 allowance_exhausted`), region already
 //  chosen, read first; and the bundled `providers.json` (`nanomuse/llm/providers.json`,
 //  written by `scripts/providers-json.mjs`) when the relay sent none. The Android twin is
-//  io.github.nanomuse.cloud.ProviderCatalogue / Guidance.
+//  store.hvgy.hermes.cloud.ProviderCatalogue / Guidance.
 //
 
 import Foundation

@@ -7,7 +7,7 @@ final class NanoMuseOwnSchemeTests: XCTestCase {
 
     func testBothNamesAreOursAndNothingElseIs() {
         for s in ["minis", "MINIS", "nanomuse", "NanoMuse"] { XCTAssertTrue(NanoMuseOwnScheme.isOwn(s), s) }
-        for s in ["", "http", "https", "minis-mcp", "nanomuse-mcp", "file", "shortcuts"] {
+        for s in ["", "http", "https", "minis-mcp", "hermes-mcp", "file", "shortcuts"] {
             XCTAssertFalse(NanoMuseOwnScheme.isOwn(s), s)
         }
         XCTAssertFalse(NanoMuseOwnScheme.isOwn(nil))
@@ -15,15 +15,15 @@ final class NanoMuseOwnSchemeTests: XCTestCase {
 
     func testTheSystemsNameReadsAsTheAppsOwn() {
         func read(_ s: String) -> String { NanoMuseOwnScheme.internalURL(URL(string: s)!).absoluteString }
-        XCTAssertEqual(read("nanomuse://share"), "minis://share")
+        XCTAssertEqual(read("hermes://share"), "minis://share")
         XCTAssertEqual(read("NanoMuse://settings/soul"), "minis://settings/soul")
-        XCTAssertEqual(read("nanomuse://session/abc/index.html?title=x&y=1"), "minis://session/abc/index.html?title=x&y=1")
+        XCTAssertEqual(read("hermes://session/abc/index.html?title=x&y=1"), "minis://session/abc/index.html?title=x&y=1")
         XCTAssertEqual(read("minis://attachments/a.png"), "minis://attachments/a.png")
         XCTAssertEqual(read("https://nanomuse.cn/"), "https://nanomuse.cn/")
         // the host part is not a scheme
-        XCTAssertEqual(read("https://nanomuse.cn/nanomuse://x"), "https://nanomuse.cn/nanomuse://x")
+        XCTAssertEqual(read("https://nanomuse.cn/hermes://x"), "https://nanomuse.cn/hermes://x")
         // a host with no path still has a host
-        XCTAssertEqual(NanoMuseOwnScheme.internalURL(URL(string: "nanomuse://share")!).host, "share")
+        XCTAssertEqual(NanoMuseOwnScheme.internalURL(URL(string: "hermes://share")!).host, "share")
     }
 
     func testThePlistRegistersTheSystemsNamesOnly() throws {

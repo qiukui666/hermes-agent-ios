@@ -1,6 +1,6 @@
 //
 //  NanoMuseShell.swift
-//  nanoMuse
+//  Hermes
 //
 //  The Muse shell on iPhone and iPad: one main chat pinned to the Chat tab,
 //  a bottom bar for Chat / Feed / Ideas / Goals / Library, and a side
@@ -126,16 +126,16 @@ struct NanoMuseRoot: View {
                 NanoMuseHomeView()
             } else {
                 ContentView()
-                    .nanoMuseStudioPresenter(enabled: true)
-                    .nanoMuseAgentPagePresenter(enabled: true, onOpenSession: { id in
+                    .HermesStudioPresenter(enabled: true)
+                    .HermesAgentPagePresenter(enabled: true, onOpenSession: { id in
                         NotificationCenter.default.post(name: .openSessionFromIntent, object: nil, userInfo: ["sessionId": id])
                     }, onPrefillChat: { text in
-                        NotificationCenter.default.post(name: .nanoMuseComposerPrefill, object: nil, userInfo: ["text": text])
+                        NotificationCenter.default.post(name: .HermesComposerPrefill, object: nil, userInfo: ["text": text])
                     }, onOpenRoutines: nil)
             }
         }
         // The card for a step another device's Muse asks about, over the shell and the upstream layout alike.
-        .nanoMuseRemoteApprovalPresenter()
+        .HermesRemoteApprovalPresenter()
         .onAppear {
             NanoMuseProfileSync.shared.start()
             NanoMuseAccountData.shared.start() // C12: whose chat is whose; the reinstall sweep
@@ -172,7 +172,7 @@ struct NanoMuseAgentPagePresenter: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onReceive(NotificationCenter.default.publisher(for: .nanoMuseOpenAgentPage)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: .HermesOpenAgentPage)) { _ in
                 guard enabled else { return }
                 shown = true
             }
@@ -196,7 +196,7 @@ struct NanoMuseAgentPagePresenter: ViewModifier {
 }
 
 extension View {
-    func nanoMuseAgentPagePresenter(enabled: Bool, onOpenSession: @escaping (String) -> Void, onPrefillChat: @escaping (String) -> Void, onOpenRoutines: (() -> Void)?) -> some View {
+    func HermesAgentPagePresenter(enabled: Bool, onOpenSession: @escaping (String) -> Void, onPrefillChat: @escaping (String) -> Void, onOpenRoutines: (() -> Void)?) -> some View {
         modifier(NanoMuseAgentPagePresenter(enabled: enabled, onOpenSession: onOpenSession, onPrefillChat: onPrefillChat, onOpenRoutines: onOpenRoutines))
     }
 }
@@ -208,7 +208,7 @@ struct NanoMuseStudioPresenter: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onReceive(NotificationCenter.default.publisher(for: .nanoMuseOpenAvatarStudio)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: .HermesOpenAvatarStudio)) { _ in
                 guard enabled else { return }
                 shown = true
             }
@@ -219,7 +219,7 @@ struct NanoMuseStudioPresenter: ViewModifier {
 }
 
 extension View {
-    func nanoMuseStudioPresenter(enabled: Bool) -> some View {
+    func HermesStudioPresenter(enabled: Bool) -> some View {
         modifier(NanoMuseStudioPresenter(enabled: enabled))
     }
 }
@@ -248,7 +248,7 @@ final class NanoMuseMainChat: ObservableObject {
             .store(in: &cancellables)
         // C10: another account signed in — its own main chat, or a fresh draft; never the
         // conversation the previous account left pinned here.
-        NotificationCenter.default.publisher(for: .nanoMuseAccountSwitched)
+        NotificationCenter.default.publisher(for: .HermesAccountSwitched)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.accountSwitched() }
             .store(in: &cancellables)
@@ -373,10 +373,10 @@ struct NanoMuseHomeView: View {
     /// Reduce Motion on: the bottom bar fades out for the keyboard instead of sliding down.
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    /// The agent's name from SOUL.md, "nanoMuse" until it has one.
+    /// The agent's name from SOUL.md, "Hermes" until it has one.
     static func currentAgentName() -> String {
         let n = SoulStore.cachedMetadata.name
-        return n.isEmpty ? "nanoMuse" : n
+        return n.isEmpty ? "Hermes" : n
     }
 
     /// Hidden while the keyboard is up (Android's IME) and while the chat's voice panel is
@@ -457,8 +457,8 @@ struct NanoMuseHomeView: View {
                 onSettings: { showNanoMuseSettings = true }
             )
         }
-        .nanoMuseStudioPresenter(enabled: !showClassic)
-        .nanoMuseAgentPagePresenter(
+        .HermesStudioPresenter(enabled: !showClassic)
+        .HermesAgentPagePresenter(
             enabled: !showClassic,
             onOpenSession: { id in openSideChat(id) },
             onPrefillChat: { text in prefillMainChat(text) },
@@ -509,7 +509,7 @@ struct NanoMuseHomeView: View {
         .onReceive(NotificationCenter.default.publisher(for: .soulMdChanged)) { _ in
             agentName = Self.currentAgentName()
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseHomeAction)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .HermesHomeAction)) { note in
             // The Muse header's ••• menu on the rooms, and the rooms' own shortcuts.
             switch note.object as? String {
             case "settings": showNanoMuseSettings = true
@@ -527,16 +527,16 @@ struct NanoMuseHomeView: View {
             default: break
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseMainChatAdopt)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .HermesMainChatAdopt)) { note in
             // C7: the account's main chat arrived while ours was still an empty draft.
             guard let id = note.object as? String else { return }
             main.adoptIfDraft(id)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseOpenChat)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .HermesOpenChat)) { note in
             guard let id = note.object as? String else { return }
             openSideChat(id)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseOpenRoom)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .HermesOpenRoom)) { note in
             // A fence card's "See in Goals" / "Open the feed".
             switch note.object as? String {
             case "goals": tab = .goals
@@ -546,7 +546,7 @@ struct NanoMuseHomeView: View {
             default: break
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseOpenRoutines)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .HermesOpenRoutines)) { _ in
             tab = .goals
         }
         .onReceive(NotificationCenter.default.publisher(for: .openSessionFromIntent)) { note in
@@ -582,7 +582,7 @@ struct NanoMuseHomeView: View {
     private func prefillMainChat(_ text: String) {
         chatPath.removeAll()
         tab = .chat
-        NotificationCenter.default.post(name: .nanoMuseComposerPrefill, object: main.chatId, userInfo: ["text": text])
+        NotificationCenter.default.post(name: .HermesComposerPrefill, object: main.chatId, userInfo: ["text": text])
     }
 
     /// A message sent in the main chat on the person's behalf (a goal's opener, as Android's sendToMainChat).
@@ -592,7 +592,7 @@ struct NanoMuseHomeView: View {
         if let id = main.chatId, !main.isDraft, let vm = ViewModelCache.shared.get(for: id) {
             vm.nmSendNow(text)
         } else {
-            NotificationCenter.default.post(name: .nanoMuseComposerPrefill, object: main.chatId, userInfo: ["text": text, "send": true])
+            NotificationCenter.default.post(name: .HermesComposerPrefill, object: main.chatId, userInfo: ["text": text, "send": true])
         }
     }
 
@@ -634,7 +634,7 @@ struct NanoMuseHomeView: View {
                     NanoMuseChatHeaderHost(
                         liveId: main.liveId,
                         name: agentName,
-                        onFace: { NotificationCenter.default.post(name: .nanoMuseOpenAgentPage, object: main.liveId ?? main.chatId) },
+                        onFace: { NotificationCenter.default.post(name: .HermesOpenAgentPage, object: main.liveId ?? main.chatId) },
                         leading: { drawerDisc },
                         trailing: { chatMenu }
                     )
@@ -735,7 +735,7 @@ struct NanoMuseHomeView: View {
         .accessibilityLabel(Text(AppLocalized("More")))
     }
 
-    /// One of this chat's own menu entries: AIChatView acts on it (see its `// nanoMuse:` hook).
+    /// One of this chat's own menu entries: AIChatView acts on it (see its `// Hermes:` hook).
     private func chatAction(_ action: NanoMuseChatAction) {
         guard let id = main.chatId else { return }
         NanoMuseChatAction.post(action, session: main.liveId ?? id)
@@ -822,7 +822,7 @@ struct NanoMuseHomeView: View {
 
 extension Notification.Name {
     /// `object` is a session id (or a `__new__…` draft id): the shell shows it.
-    static let nanoMuseOpenChat = Notification.Name("nanoMuse.openChat")
+    static let HermesOpenChat = Notification.Name("Hermes.openChat")
 }
 
 /// The upstream layout, presented from the drawer as a sheet (swipe down
@@ -833,7 +833,7 @@ private struct NanoMuseClassicCover: View {
 
     var body: some View {
         ContentView()
-            .nanoMuseStudioPresenter(enabled: true)
+            .HermesStudioPresenter(enabled: true)
             .onAppear {
                 guard wantsSettings else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
@@ -1011,7 +1011,7 @@ private struct NanoMuseCategoryShape: Shape {
 extension Notification.Name {
     /// `object` is one of "settings", "coding", "routines", "systemFiles", "sharedFolders",
     /// "chatFiles": the home opens that page over the current tab.
-    static let nanoMuseHomeAction = Notification.Name("nanoMuse.homeAction")
+    static let HermesHomeAction = Notification.Name("Hermes.homeAction")
 }
 
 /// What Feed / Ideas / Goals / Library need to draw the Muse header: the
@@ -1026,7 +1026,7 @@ struct NanoMuseRoomChrome {
 
     /// Ask the home to open one of its pages ("settings", "systemFiles", …).
     func open(_ page: String) {
-        NotificationCenter.default.post(name: .nanoMuseHomeAction, object: page)
+        NotificationCenter.default.post(name: .HermesHomeAction, object: page)
     }
 }
 
@@ -1045,7 +1045,7 @@ struct NanoMuseRoomHeader<Trailing: View>: View {
         NanoMuseChatHeaderHost(
             liveId: chrome.liveId,
             name: chrome.name,
-            onFace: { NotificationCenter.default.post(name: .nanoMuseOpenAgentPage, object: chrome.liveId) },
+            onFace: { NotificationCenter.default.post(name: .HermesOpenAgentPage, object: chrome.liveId) },
             leading: {
                 NanoMuseRoundButton(symbol: "line.3.horizontal", label: AppLocalized("Chats and settings"), action: chrome.onMenu)
             },

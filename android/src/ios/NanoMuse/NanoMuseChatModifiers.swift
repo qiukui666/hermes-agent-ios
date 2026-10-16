@@ -1,6 +1,6 @@
 //
 //  NanoMuseChatModifiers.swift
-//  nanoMuse
+//  Hermes
 //
 //  Why these exist. `AIChatView.body` is one expression of some sixty chained
 //  modifiers (sheets, alerts, listeners). Each link wraps the value so far in
@@ -329,7 +329,7 @@ struct NanoMuseChatHooks: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onReceive(NotificationCenter.default.publisher(for: .nanoMuseChatAction)) { note in
+            .onReceive(NotificationCenter.default.publisher(for: .HermesChatAction)) { note in
                 guard let action = NanoMuseChatAction.from(note, for: vm.nmSessionKey) else { return }
                 perform(action)
             }
