@@ -1,6 +1,6 @@
 //
 //  NanoMuseSync.swift
-//  Hermes
+//  nanoMuse
 //
 //  Contract C7, display rules C8: the account's conversations are the same
 //  on every device. This is the client: a side table that gives each local
@@ -41,10 +41,10 @@ import UIKit
 extension Notification.Name {
     /// A main conversation arrived from another device while this phone's main chat was still a
     /// draft; the object is the local session id the shell should show as the main chat.
-    static let HermesMainChatAdopt = Notification.Name("HermesMainChatAdopt")
+    static let nanoMuseMainChatAdopt = Notification.Name("nanoMuseMainChatAdopt")
     /// C10: the signed-in account is not the one the tables were open for; the object is the
     /// new account's key. The lists re-read, the main chat re-resolves.
-    static let HermesAccountSwitched = Notification.Name("HermesAccountSwitched")
+    static let nanoMuseAccountSwitched = Notification.Name("nanoMuseAccountSwitched")
 }
 
 @MainActor
@@ -360,7 +360,7 @@ final class NanoMuseSync: ObservableObject {
         // the lists and the Chat tab: off the view update that may have asked for the table
         Task { @MainActor [self] in
             revision += 1
-            NotificationCenter.default.post(name: .HermesAccountSwitched, object: key)
+            NotificationCenter.default.post(name: .nanoMuseAccountSwitched, object: key)
             NotificationCenter.default.post(name: .sessionDidUpdate, object: nil)
         }
     }
@@ -907,7 +907,7 @@ final class NanoMuseSync: ObservableObject {
                     // No main chat here yet (a draft): the account's main becomes a session the shell adopts.
                     let session = await ChatStore.shared.createSession(modelId: Self.defaultModelId(), title: title, source: "nanomuse-sync")
                     store.entries[session.id] = Entry(cid: cid, kind: "main", fromDevice: device, fromDeviceName: deviceName, pushedTitle: title, pushedUpdatedAt: nil, knownMids: [])
-                    NotificationCenter.default.post(name: .HermesMainChatAdopt, object: session.id)
+                    NotificationCenter.default.post(name: .nanoMuseMainChatAdopt, object: session.id)
                     changed = true
                 }
                 continue

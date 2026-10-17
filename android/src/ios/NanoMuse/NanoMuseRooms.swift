@@ -1,6 +1,6 @@
 //
 //  NanoMuseRooms.swift
-//  Hermes
+//  nanoMuse
 //
 //  Two of the rooms next to the chat: Ideas (the bundled catalogue — one
 //  tap sends a prompt to a new chat, schedules a routine or starts a goal)
@@ -405,7 +405,7 @@ struct NanoMuseLibraryRoom: View {
                                 }
                                 if let sid = entry.sessionId {
                                     Button {
-                                        NotificationCenter.default.post(name: .HermesOpenChat, object: sid)
+                                        NotificationCenter.default.post(name: .nanoMuseOpenChat, object: sid)
                                     } label: {
                                         Label(AppLocalized("Open conversation"), systemImage: "bubble.left")
                                     }

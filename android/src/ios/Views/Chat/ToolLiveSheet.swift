@@ -217,9 +217,9 @@ struct FloatingToolBar: View {
     @State private var selectedIdx: Int? = nil
     @State private var expanded = false
     @AppStorage("toolPreviewEnabled") private var toolPreviewEnabled: Bool = true
-    // Hermes: in the Muse shell a glyph inside the bar stands in for the thumbnail (NanoMuseToolBar.swift)
-    private var nmShell: Bool { NanoMuseShellPrefs.shell } // Hermes:
-    private var showsThumbnail: Bool { toolPreviewEnabled && !nmShell } // Hermes:
+    // nanoMuse: in the Muse shell a glyph inside the bar stands in for the thumbnail (NanoMuseToolBar.swift)
+    private var nmShell: Bool { NanoMuseShellPrefs.shell } // nanoMuse:
+    private var showsThumbnail: Bool { toolPreviewEnabled && !nmShell } // nanoMuse:
 
     private var displayedIdx: Int {
         if let idx = selectedIdx, idx < toolBlocks.count { return idx }
@@ -252,11 +252,11 @@ struct FloatingToolBar: View {
                 displayedIdx: displayedIdx,
                 expanded: $expanded,
                 selectedIdx: $selectedIdx,
-                leadingInset: showsThumbnail ? Self.thumbnailWidth + 18 : 0, // Hermes: showsThumbnail
-                nmShell: nmShell // Hermes:
+                leadingInset: showsThumbnail ? Self.thumbnailWidth + 18 : 0, // nanoMuse: showsThumbnail
+                nmShell: nmShell // nanoMuse:
             )
 
-            if showsThumbnail { // Hermes: showsThumbnail
+            if showsThumbnail { // nanoMuse: showsThumbnail
                 ToolPreviewThumbnail(
                     block: displayedBlock,
                     snapshot: displayedSnapshot,
@@ -536,7 +536,7 @@ struct ToolLiveSheet: View {
                 // out to the step pill's trailing column (under the
                 // elapsed-duration "5s" text) so it lives next to where the
                 // user is already scanning timing info.
-                Text("Hermes Computer")
+                Text("nanoMuse Computer")
                     .font(.system(size: 15, weight: .semibold))
 
                 Spacer()
@@ -1981,16 +1981,16 @@ struct ToolLiveSheet: View {
 
     private var toolTitle: String {
         switch block.kind {
-        case .shellTool: return "Hermes is using Shell"
-        case .fileReadTool: return "Hermes is reading File"
-        case .fileWriteTool: return "Hermes is using Editor"
-        case .fileEditTool: return "Hermes is editing File"
-        case .browserTool: return "Hermes is using Browser"
-        case .readImageTool: return "Hermes is reading Image"
-        case .memoryTool: return "Hermes is using Memory"
-        case .info: return "Hermes"
-        case .text: return "Hermes"
-        case .thinking: return "Hermes"
+        case .shellTool: return "nanoMuse is using Shell"
+        case .fileReadTool: return "nanoMuse is reading File"
+        case .fileWriteTool: return "nanoMuse is using Editor"
+        case .fileEditTool: return "nanoMuse is editing File"
+        case .browserTool: return "nanoMuse is using Browser"
+        case .readImageTool: return "nanoMuse is reading Image"
+        case .memoryTool: return "nanoMuse is using Memory"
+        case .info: return "nanoMuse"
+        case .text: return "nanoMuse"
+        case .thinking: return "nanoMuse"
         }
     }
 
@@ -2413,13 +2413,13 @@ private struct ToolStatusBarSurface: ViewModifier {
     }
 }
 
-// Hermes: picks the shell's surface or upstream's, which stays private to this file.
-private struct NanoMuseToolStatusSurface: ViewModifier { // Hermes:
-    var nmShell: Bool // Hermes:
-    func body(content: Content) -> some View { // Hermes:
-        if nmShell { content.modifier(NanoMuseToolBarSurface()) } else { content.modifier(ToolStatusBarSurface()) } // Hermes:
-    } // Hermes:
-} // Hermes:
+// nanoMuse: picks the shell's surface or upstream's, which stays private to this file.
+private struct NanoMuseToolStatusSurface: ViewModifier { // nanoMuse:
+    var nmShell: Bool // nanoMuse:
+    func body(content: Content) -> some View { // nanoMuse:
+        if nmShell { content.modifier(NanoMuseToolBarSurface()) } else { content.modifier(ToolStatusBarSurface()) } // nanoMuse:
+    } // nanoMuse:
+} // nanoMuse:
 
 private struct ToolStatusBar: View {
     @ObservedObject var block: AssistantBlock
@@ -2428,11 +2428,11 @@ private struct ToolStatusBar: View {
     @Binding var expanded: Bool
     @Binding var selectedIdx: Int?
     var leadingInset: CGFloat = 0
-    var nmShell = false // Hermes: the Muse shell's bar (NanoMuseToolBar.swift)
+    var nmShell = false // nanoMuse: the Muse shell's bar (NanoMuseToolBar.swift)
 
     var body: some View {
         HStack(spacing: 2) {
-            if nmShell { NanoMuseToolGlyph(block: block).padding(.trailing, 4) } // Hermes: the kind of step, where the thumbnail stood
+            if nmShell { NanoMuseToolGlyph(block: block).padding(.trailing, 4) } // nanoMuse: the kind of step, where the thumbnail stood
             statusIcon
 
             // [T-step-timestamp v2 aa8b1128] Inline HH:mm:ss prefix removed
@@ -2487,7 +2487,7 @@ private struct ToolStatusBar: View {
         .padding(.vertical, 5)
         .frame(minHeight: 38)
         .frame(maxWidth: .infinity)
-        .modifier(NanoMuseToolStatusSurface(nmShell: nmShell)) // Hermes: the composer's fill in the shell, upstream's surface otherwise
+        .modifier(NanoMuseToolStatusSurface(nmShell: nmShell)) // nanoMuse: the composer's fill in the shell, upstream's surface otherwise
     }
 
     @ViewBuilder

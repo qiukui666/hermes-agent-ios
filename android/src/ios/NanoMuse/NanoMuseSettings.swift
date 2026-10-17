@@ -1,6 +1,6 @@
 //
 //  NanoMuseSettings.swift
-//  Hermes
+//  nanoMuse
 //
 //  Settings as Muse cards, in Android's order: the model, the agent, the
 //  phone, the app, about. Reached from the drawer, the ••• menus and the
@@ -105,7 +105,7 @@ struct NanoMuseSettingsHomeView: View {
                 NanoMuseLinkRow(title: AppLocalized("Soul")) { SoulSettingsView() }
                 NanoMuseRowDivider()
                 NanoMuseActionRow(title: AppLocalized("Avatar")) {
-                    NotificationCenter.default.post(name: .HermesOpenAvatarStudio, object: nil)
+                    NotificationCenter.default.post(name: .nanoMuseOpenAvatarStudio, object: nil)
                 }
                 NanoMuseRowDivider()
                 NanoMuseLinkRow(title: AppLocalized("Memory")) { MemoryManagementView() }
@@ -175,7 +175,7 @@ struct NanoMuseSettingsHomeView: View {
 
     private var aboutCard: some View {
         NanoMuseCard {
-            NanoMuseLinkRow(title: AppLocalized("About Hermes")) { AboutView() }
+            NanoMuseLinkRow(title: AppLocalized("About nanoMuse")) { AboutView() }
             NanoMuseRowDivider()
             NanoMuseActionRow(title: AppLocalized("Privacy Policy")) {
                 openURL(NanoMuseLinks.privacy)
@@ -229,7 +229,7 @@ enum NanoMuseLinks {
         let info = Bundle.main.infoDictionary
         let version = info?["CFBundleShortVersionString"] as? String ?? "?"
         let build = info?["CFBundleVersion"] as? String ?? "?"
-        var components = URLComponents(string: "https://github.com/nano-muse/Hermes/issues/new")!
+        var components = URLComponents(string: "https://github.com/nano-muse/nanoMuse/issues/new")!
         components.queryItems = [
             URLQueryItem(name: "template", value: "bug_report.yml"),
             URLQueryItem(name: "labels", value: "bug,ios"),
@@ -237,7 +237,7 @@ enum NanoMuseLinks {
             URLQueryItem(name: "version", value: "\(version) (\(build))"),
             URLQueryItem(name: "os", value: "iOS \(UIDevice.current.systemVersion), \(UIDevice.current.model)"),
         ]
-        return components.url ?? URL(string: "https://github.com/nano-muse/Hermes/issues")!
+        return components.url ?? URL(string: "https://github.com/nano-muse/nanoMuse/issues")!
     }
 }
 

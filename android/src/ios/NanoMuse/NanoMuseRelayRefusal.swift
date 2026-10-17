@@ -1,6 +1,6 @@
 //
 //  NanoMuseRelayRefusal.swift
-//  Hermes
+//  nanoMuse
 //
 //  The relay's refusals as the chat shows them (docs/parity.md, item 35): one kind per code,
 //  read off the HTTP status and the body of a refused model call, so the chat can show one
@@ -8,7 +8,7 @@
 //  The kinds, the codes and the sentences' meaning are the desktop's
 //  (`harness/dsh-nanomuse/src/refusals.ts`) and the runtime's (`nanomuse/server/failures.py`);
 //  the words are the phone's own, in every language (`NanoMuseCloud.describe`). The Android
-//  twin is store.hvgy.hermes.cloud.RelayRefusal; the canonical line is the same on both.
+//  twin is io.github.nanomuse.cloud.RelayRefusal; the canonical line is the same on both.
 //
 //  Two halves. `NanoMuseRelayRefusal` is pure: classify, parse, the stored line. The
 //  `NanoMuseRelaySignal` keeps the last refusal for a few seconds between `mapHTTPError`

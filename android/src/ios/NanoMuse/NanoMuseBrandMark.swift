@@ -1,6 +1,6 @@
 //
 //  NanoMuseBrandMark.swift
-//  Hermes
+//  nanoMuse
 //
 //  The app icon as a view, for the pages that stand for the app rather than
 //  for the agent (docs/brand.md): the sign-in page of the first run. The

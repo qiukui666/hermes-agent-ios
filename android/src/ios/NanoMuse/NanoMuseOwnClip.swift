@@ -1,6 +1,6 @@
 //
 //  NanoMuseOwnClip.swift
-//  Hermes
+//  nanoMuse
 //
 //  A clip of the person's own as the face (#324). One short video from the
 //  photo library plays muted in a loop wherever the face moves: for the mood
@@ -284,7 +284,7 @@ struct NanoMuseOwnClipFile: Transferable {
 
 /// Picking a clip of one's own: the photo library's video picker, the checks, and the preview
 /// sheet with the clip playing in the face's own frame, "Use" and "Cancel". A screen calls
-/// `choose()` from a button or a menu and wears `.HermesOwnClipHost(picker)` once.
+/// `choose()` from a button or a menu and wears `.nanoMuseOwnClipHost(picker)` once.
 @MainActor
 final class NanoMuseOwnClipPicker: ObservableObject {
     @Published var presented = false
@@ -404,7 +404,7 @@ struct NanoMuseOwnClipHost: ViewModifier {
 }
 
 extension View {
-    func HermesOwnClipHost(_ picker: NanoMuseOwnClipPicker) -> some View {
+    func nanoMuseOwnClipHost(_ picker: NanoMuseOwnClipPicker) -> some View {
         modifier(NanoMuseOwnClipHost(picker: picker))
     }
 }
@@ -455,7 +455,7 @@ struct NanoMuseOwnClipPreview: View {
                 onCancel()
             }
             .frame(maxWidth: .infinity)
-            Text(AppLocalized("The clip stays on this phone. It is not uploaded to Hermes Cloud or synced to your other devices."))
+            Text(AppLocalized("The clip stays on this phone. It is not uploaded to nanoMuse Cloud or synced to your other devices."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

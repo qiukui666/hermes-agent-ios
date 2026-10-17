@@ -28,7 +28,7 @@ struct ProviderInstanceDetailView: View {
     @State private var editingModelEntry: ModelEntry?
     @State private var pendingDeleteModelEntry: ModelEntry?
     @State private var showKeyRevealed = false
-    @State private var nmCloudOffRefused = false // Hermes: the Cloud switch refused (see the Status section)
+    @State private var nmCloudOffRefused = false // nanoMuse: the Cloud switch refused (see the Status section)
 
     private var instance: ProviderInstance? {
         store.instance(for: instanceId)
@@ -249,11 +249,11 @@ struct ProviderInstanceDetailView: View {
             }
 
             // MARK: Status
-            Section { // Hermes: was `Section("Status")`; the header moved below to make room for a footer
+            Section { // nanoMuse: was `Section("Status")`; the header moved below to make room for a footer
                 Toggle("Enabled", isOn: Binding(
                     get: { instance.isEnabled },
                     set: { newValue in
-                        // Hermes: the Cloud instance off is the same switch as Settings › Models: the
+                        // nanoMuse: the Cloud instance off is the same switch as Settings › Models: the
                         // chat slot moves to the first own model, or the switch is refused with one sentence
                         // while nothing else could answer. A provider of one's own keeps upstream's path.
                         if instance.id == NanoMuseCloud.instance?.id {
@@ -272,9 +272,9 @@ struct ProviderInstanceDetailView: View {
             } header: {
                 Text("Status")
             } footer: {
-                // Hermes: the refusal, under the switch, where the page has it
+                // nanoMuse: the refusal, under the switch, where the page has it
                 if nmCloudOffRefused {
-                    Text(AppLocalized("Add a provider of your own first; with Hermes Cloud off, nothing else could answer."))
+                    Text(AppLocalized("Add a provider of your own first; with nanoMuse Cloud off, nothing else could answer."))
                         .foregroundStyle(.red)
                 }
             }
@@ -382,11 +382,11 @@ struct ProviderInstanceDetailView: View {
             }
 
             // MARK: Danger Zone
-            // Hermes: the Cloud instance is the account; deleting it would sign the person out.
+            // nanoMuse: the Cloud instance is the account; deleting it would sign the person out.
             // The row offers the switch (Settings → Models) instead, and says so.
             if NanoMuseCloud.instance?.id == instanceId {
                 Section {
-                    Text(AppLocalized("This provider is your Hermes Cloud account and cannot be deleted. To stop using its models, switch off Use Hermes Cloud models under Models; you stay signed in for sync."))
+                    Text(AppLocalized("This provider is your nanoMuse Cloud account and cannot be deleted. To stop using its models, switch off Use nanoMuse Cloud models under Models; you stay signed in for sync."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -630,7 +630,7 @@ struct ProviderInstanceDetailView: View {
         } header: {
             Text(AppLocalized("Custom User-Agent"))
         } footer: {
-            Text(AppLocalized("Override the User-Agent header sent to this endpoint. Leave empty to use the Hermes default. Useful for relays that only accept specific clients (e.g. \"claude-cli/1.0\")."))
+            Text(AppLocalized("Override the User-Agent header sent to this endpoint. Leave empty to use the nanoMuse default. Useful for relays that only accept specific clients (e.g. \"claude-cli/1.0\")."))
         }
     }
 

@@ -1,6 +1,6 @@
 //
 //  NanoMuseHeader.swift
-//  Hermes
+//  nanoMuse
 //
 //  The Muse header in the chat's navigation bar: the agent's face, its
 //  name and one status line that says what it is doing right now. The
@@ -13,7 +13,7 @@ import Combine
 /// Posted by "Avatar studio…" on the agent page (and the face's menu); the
 /// shell (or the root in the OpenMinis layout) presents the avatar studio.
 extension Notification.Name {
-    static let HermesOpenAvatarStudio = Notification.Name("Hermes.openAvatarStudio")
+    static let nanoMuseOpenAvatarStudio = Notification.Name("nanoMuse.openAvatarStudio")
 }
 
 // MARK: - Status line
@@ -234,7 +234,7 @@ struct NanoMuseHeaderTitle: View {
         HStack(spacing: 8) {
             // The face opens the agent's page (Android: AgentProfileScreen); the studio is one of its doors.
             Button {
-                NotificationCenter.default.post(name: .HermesOpenAgentPage, object: vm.nmSessionKey)
+                NotificationCenter.default.post(name: .nanoMuseOpenAgentPage, object: vm.nmSessionKey)
             } label: {
                 NanoMuseFaceView(mood: mood, size: 32)
             }

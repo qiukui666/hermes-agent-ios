@@ -1,4 +1,4 @@
-// Hermes: the account's devices on the hub, shown under the Hermes Cloud account —
+// nanoMuse: the account's devices on the hub, shown under the nanoMuse Cloud account —
 // this iPhone's two switches (reachable · operable), its name, the other devices with an
 // online dot (tap an offline one to forget it), and the web console's address.
 
@@ -33,7 +33,7 @@ struct NanoMuseDevicesSection: View {
         } header: {
             Text(AppLocalized("Devices"))
         } footer: {
-            Text(AppLocalized("Every device signed in to this account is a Muse: this iPhone, your computers running Hermes Desktop, the web console. Each can ask the others for things, on any network, through Hermes Cloud. On iOS the others can open links here and send notifications; the iPhone's own Muse works on the iPhone."))
+            Text(AppLocalized("Every device signed in to this account is a Muse: this iPhone, your computers running nanoMuse Desktop, the web console. Each can ask the others for things, on any network, through nanoMuse Cloud. On iOS the others can open links here and send notifications; the iPhone's own Muse works on the iPhone."))
         }
         .alert(AppLocalized("This iPhone's name"), isPresented: $editingName) {
             TextField(AppLocalized("Name"), text: $name)
@@ -43,7 +43,7 @@ struct NanoMuseDevicesSection: View {
 
         Section {
             if hub.others.isEmpty {
-                Text(AppLocalized("No other device yet. On your computer, install Hermes Desktop and sign in with the same account; it appears here within seconds."))
+                Text(AppLocalized("No other device yet. On your computer, install nanoMuse Desktop and sign in with the same account; it appears here within seconds."))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
@@ -52,7 +52,7 @@ struct NanoMuseDevicesSection: View {
                     // as Android's DevicesSection). Offline: a tap offers to forget it.
                     Button {
                         if d.online {
-                            NotificationCenter.default.post(name: .HermesHomeAction, object: "askDevice", userInfo: ["text": "@\(d.name) "])
+                            NotificationCenter.default.post(name: .nanoMuseHomeAction, object: "askDevice", userInfo: ["text": "@\(d.name) "])
                         } else {
                             forgetting = d
                         }

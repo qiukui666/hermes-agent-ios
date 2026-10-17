@@ -1,6 +1,6 @@
 //
 //  NanoMusePresence.swift
-//  Hermes
+//  nanoMuse
 //
 //  Contract C9: while another device of the account works on a synced
 //  conversation, this phone says so under that device's last line —
@@ -12,7 +12,7 @@
 //  makes for its own turns, and the line put on the message it belongs to.
 //  Presence is never retried and never blocks anything.
 //  Relay: POST /v1/sync/working, GET /v1/sync/state (`working`), hub frame `working`.
-//  Android: store.hvgy.hermes.sync.Presence; desktop: sync.ts `working`.
+//  Android: io.github.nanomuse.sync.Presence; desktop: sync.ts `working`.
 //
 
 import Foundation

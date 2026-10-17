@@ -1,6 +1,6 @@
 //
 //  NanoMuseReach.swift
-//  Hermes
+//  nanoMuse
 //
 //  Reaching the account's other devices from this iPhone through the hub:
 //  open a link there, send a note, ask for a screenshot, run a shell
@@ -67,7 +67,7 @@ private struct NanoMuseReachSheet: View {
                 Section {
                     Button {
                         dismiss()
-                        NotificationCenter.default.post(name: .HermesHomeAction, object: "askDevice", userInfo: ["text": "@\(device.name) "])
+                        NotificationCenter.default.post(name: .nanoMuseHomeAction, object: "askDevice", userInfo: ["text": "@\(device.name) "])
                     } label: {
                         Label(AppLocalized("Ask this device"), systemImage: "bubble.left.and.text.bubble.right")
                     }
@@ -95,7 +95,7 @@ private struct NanoMuseReachSheet: View {
                     TextField(AppLocalized("A short note"), text: $note, axis: .vertical)
                         .lineLimit(1...4)
                     Button(AppLocalized("Send the note")) {
-                        run("notify", ["text": note.trimmingCharacters(in: .whitespacesAndNewlines), "title": "Hermes"]) { _ in
+                        run("notify", ["text": note.trimmingCharacters(in: .whitespacesAndNewlines), "title": "nanoMuse"]) { _ in
                             AppLocalized("Sent.")
                         }
                     }

@@ -1,6 +1,6 @@
 //
 //  NanoMuseChatCards.swift
-//  Hermes
+//  nanoMuse
 //
 //  Cards in the chat. Two kinds: the *virtual* ones that sit above the
 //  composer while something is in flight (the avatar's price, its four
@@ -48,7 +48,7 @@ struct NanoMuseChatCardsHost: View {
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 6)
-        .onReceive(NotificationCenter.default.publisher(for: .HermesComposerPrefill)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .nanoMuseComposerPrefill)) { note in
             // Meant for this chat: the object is the session key it was posted for, or nil for "whichever is open".
             if let target = note.object as? String, target != key, target != vm.sessionId, target != vm.draftId { return }
             guard let text = note.userInfo?["text"] as? String else { return }
@@ -203,7 +203,7 @@ struct NanoMuseGoalCreatedCard: View {
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 Button(AppLocalized("See in Goals")) {
-                    NotificationCenter.default.post(name: .HermesOpenRoom, object: "goals")
+                    NotificationCenter.default.post(name: .nanoMuseOpenRoom, object: "goals")
                 }
                 .font(.footnote)
             }

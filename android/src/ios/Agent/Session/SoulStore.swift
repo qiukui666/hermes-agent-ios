@@ -510,7 +510,7 @@ struct SoulMetadata: Equatable {
     var displayEmoji: String { "🐾" }
 
     static let `default` = SoulMetadata(
-        name: "小爱",
+        name: "nanoMuse",
         // Default emoji is intentionally empty — the UI uses the fixed
         // `displayEmoji` sparkle and serialize() no longer writes the
         // `emoji:` line. Kept on the struct only so the parser can
@@ -755,7 +755,7 @@ enum SoulStore {
     /// style / lang) is seeded.
     static let defaultContent: String = """
     ---
-    name: "小爱"
+    name: "nanoMuse"
     style: ""
     lang: "auto"
     ---
@@ -889,7 +889,7 @@ enum SystemPromptBuilder {
     /// The identity sentence template. `{name}` is substituted from the
     /// SOUL metadata. This wording is owned by the app — users never see
     /// it in the Personality editor, and it's stable so model-side
-    /// expectations ("Hermes, capable AI assistant, iSH Linux shell")
+    /// expectations ("nanoMuse, capable AI assistant, iSH Linux shell")
     /// stay intact regardless of what the user writes in SOUL.md.
     ///
     /// IMPORTANT: keep this sentence in sync with the original literal
@@ -925,7 +925,7 @@ enum SystemPromptBuilder {
         let name: String = {
             let n = (file?.metadata.name ?? SoulMetadata.default.name)
                 .trimmingCharacters(in: .whitespacesAndNewlines)
-            return n.isEmpty ? "Hermes" : n
+            return n.isEmpty ? "nanoMuse" : n
         }()
         let style: String = (file?.metadata.style ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1010,18 +1010,18 @@ enum SystemPromptBuilder {
 
 // MARK: - Reusable SwiftUI text view
 
-/// Renders the current SOUL.md `name` (falling back to "Hermes") and
+/// Renders the current SOUL.md `name` (falling back to "nanoMuse") and
 /// auto-refreshes whenever SoulStore posts `.soulMdChanged`. Use this in
-/// any place that previously hard-coded "Hermes" as a label.
+/// any place that previously hard-coded "nanoMuse" as a label.
 @MainActor
 struct AssistantSoulName: View {
     @State private var name: String = SoulStore.cachedMetadata.name.isEmpty
-        ? "Hermes" : SoulStore.cachedMetadata.name
+        ? "nanoMuse" : SoulStore.cachedMetadata.name
     var body: some View {
         Text(name)
             .onReceive(NotificationCenter.default.publisher(for: .soulMdChanged)) { _ in
                 let n = SoulStore.cachedMetadata.name
-                name = n.isEmpty ? "Hermes" : n
+                name = n.isEmpty ? "nanoMuse" : n
             }
     }
 }

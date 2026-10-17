@@ -1,11 +1,11 @@
 //
 //  NanoMuseCore.swift
-//  Hermes
+//  nanoMuse
 //
-//  Small shared pieces the Hermes files lean on: where our data lives,
+//  Small shared pieces the nanoMuse files lean on: where our data lives,
 //  day keys, the fenced blocks the agent writes for the app
 //  (```nanomuse-…```), and the per-session system-prompt addenda. Android:
-//  store.hvgy.hermes.chat.SessionAddenda and the helpers next to it.
+//  io.github.nanomuse.chat.SessionAddenda and the helpers next to it.
 //
 
 import Foundation
