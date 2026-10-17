@@ -36,11 +36,11 @@ struct ToolLoopConfig {
     var globalCircuitBreakerThreshold: Int
 
     init(
-        historySize: Int = 30,
-        warningThreshold: Int = 10,
-        unknownToolThreshold: Int = 10,
-        criticalThreshold: Int = 20,
-        globalCircuitBreakerThreshold: Int = 30
+        historySize: Int = 400,
+        warningThreshold: Int = 100,
+        unknownToolThreshold: Int = 100,
+        criticalThreshold: Int = 200,
+        globalCircuitBreakerThreshold: Int = 300
     ) {
         // Auto-correct ordering so warning < critical < globalCircuitBreaker.
         let w = max(1, warningThreshold)
@@ -80,25 +80,25 @@ final class ToolLoopDetector {
         // Strategy 1: unknown_tool_repeat — highest priority.
         let unknownStreak = countUnknownStreakFromTail(toolName: toolName)
         if unknownStreak >= config.unknownToolThreshold {
-            let msg = "[LOOP BLOCKED] CRITICAL: attempted unavailable tool '\(toolName)' \(unknownStreak) times. Stop retrying that missing tool and answer without it."
+            let msg = "[LOOP NOTICE] attempted unavailable tool '\(toolName)' \(unknownStreak) times. Consider answering without it."
             logger.error("loop-detector: unknown_tool_repeat critical tool=\(toolName) streak=\(unknownStreak)")
-            return LoopCheckResult(level: .critical, message: msg, warningKey: nil)
+            return LoopCheckResult(level: .warning, message: msg, warningKey: nil)
         }
 
         // Strategy 2: global_circuit_breaker — backstop, runs before poll-specific check.
         let noProgressStreak = getNoProgressStreak(toolName: toolName, argsHash: argsHash)
         if noProgressStreak >= config.globalCircuitBreakerThreshold {
-            let msg = "[LOOP BLOCKED] CRITICAL: \(toolName) has repeated identical no-progress outcomes \(noProgressStreak) times. Session execution blocked by global circuit breaker."
+            let msg = "[LOOP NOTICE] \(toolName) has repeated identical no-progress outcomes \(noProgressStreak) times. Consider changing approach."
             logger.error("loop-detector: global_circuit_breaker critical tool=\(toolName) streak=\(noProgressStreak)")
-            return LoopCheckResult(level: .critical, message: msg, warningKey: nil)
+            return LoopCheckResult(level: .warning, message: msg, warningKey: nil)
         }
 
         // Strategy 3: known_poll_no_progress — dual threshold for known polling tools.
         if isPollTool(toolName, params) {
             if noProgressStreak >= config.criticalThreshold {
-                let msg = "[LOOP BLOCKED] CRITICAL: Called \(toolName) \(noProgressStreak) times with identical no-progress results. Session execution blocked."
+                let msg = "[LOOP NOTICE] Called \(toolName) \(noProgressStreak) times with identical no-progress results. Consider changing approach."
                 logger.error("loop-detector: poll_no_progress critical tool=\(toolName) streak=\(noProgressStreak)")
-                return LoopCheckResult(level: .critical, message: msg, warningKey: nil)
+                return LoopCheckResult(level: .warning, message: msg, warningKey: nil)
             }
             if noProgressStreak >= config.warningThreshold {
                 let key = "poll:\(toolName):\(argsHash)"

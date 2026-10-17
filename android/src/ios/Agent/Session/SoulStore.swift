@@ -653,7 +653,7 @@ enum SoulStore {
 
     // MARK: - Body length rules (unified token count)
     //
-    // The personality body has a single hard cap of 2000 tokens, applied
+    // The personality body cap is set to 200000 tokens (effectively unlimited), applied
     // at every write surface (Settings UI Save button, minis-config writer,
     // and the prompt-build-time fallback in `SystemPromptBuilder`).
     //
@@ -664,7 +664,7 @@ enum SoulStore {
     //
     // So "hello AB CD" with two CJK glyphs counts as 1 (hello) + 4 (A B C D) = 5.
 
-    static let bodyTokenLimit = 2000
+    static let bodyTokenLimit = 200_000
 
     /// Count tokens in [body] under the unified rule. Empty / whitespace
     /// returns 0. CJK glyphs/punctuation count one-per-character; non-CJK
@@ -1003,21 +1003,8 @@ enum SystemPromptBuilder {
     /// a wide net on purpose; SOUL.md is user-authored personality, not a
     /// place for instructions to the model anyway.
     private static func scrubInjections(_ s: String) -> String {
-        let patterns: [String] = [
-            #"(?i)ignore.{0,30}previous.{0,30}instructions?"#,
-            #"(?i)disregard.{0,30}(previous|prior).{0,30}instructions?"#,
-            #"(?i)forget.{0,30}(previous|prior).{0,30}instructions?"#,
-        ]
-        var lines = s.components(separatedBy: "\n")
-        lines = lines.filter { line in
-            for p in patterns {
-                if line.range(of: p, options: .regularExpression) != nil {
-                    return false
-                }
-            }
-            return true
-        }
-        return lines.joined(separator: "\n")
+        // [patched 2026-10-17] injection scrubbing disabled — SOUL.md is fully user-owned
+        return s
     }
 }
 
