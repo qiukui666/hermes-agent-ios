@@ -1,0 +1,127 @@
+name: iOS · IPA (TrollStore)
+
+# Archive the iOS app unsigned, re-sign every Mach-O with ldid + the repo's
+# entitlements, and hand back an IPA that TrollStore installs directly.
+# No Apple account, no certificates, no TestFlight.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "android/src/ios/**"
+      - "android/deps/**"
+      - ".github/workflows/ios-ipa.yml"
+
+concurrency:
+  group: ios-ipa-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ipa:
+    name: archive · package
+    runs-on: macos-26
+    timeout-minutes: 150
+    env:
+      GO_VERSION: "1.25"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive # android/deps/ish (the ARM64 iSH fork)
+
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: android/deps/rclone-mobile/go.sum
+
+      - name: Homebrew packages (iSH tooling + ldid)
+        run: brew install ninja meson llvm lld libarchive pkg-config ldid
+
+      - name: Build-time configuration
+        working-directory: android/src/ios
+        run: cp Configs/ProviderCustomization.xcconfig.example Configs/ProviderCustomization.xcconfig
+
+      - name: Pinned iSH revision
+        id: ish
+        run: echo "rev=$(git rev-parse HEAD:android/deps/ish)" >> "$GITHUB_OUTPUT"
+
+      - name: Native dependency cache
+        id: deps-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            android/deps/libs
+            android/deps/include
+            android/deps/resources
+            android/deps/frameworks
+            android/deps/lame-build
+          key: ios-deps-${{ runner.os }}-${{ steps.ish.outputs.rev }}-${{ hashFiles('android/deps/*.sh', 'android/deps/ffmpeg-patch/**', 'android/deps/rclone-mobile/**') }}
+
+      - name: Native dependencies (LAME → FFmpeg → iSH → Alpine rootfs → rclone)
+        if: steps.deps-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        run: |
+          ./deps/build_lame.sh
+          ./deps/build_ffmpeg.sh
+          ./deps/build_ish.sh
+          ./deps/prepare_alpine_rootfs.sh
+          ./deps/build_rclone_ios.sh
+
+      - name: Archive (unsigned)
+        working-directory: android/src/ios
+        run: |
+          xcodebuild archive \
+            -project Minis.xcodeproj \
+            -scheme Minis \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/nanoMuse.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} | tail -30
+
+      - name: Package IPA (ldid, TrollStore entitlements)
+        working-directory: android/src/ios
+        run: |
+          set -euo pipefail
+          APP=$(ls -d build/nanoMuse.xcarchive/Products/Applications/*.app | head -1)
+          echo "app: $APP"
+          STAGE=build/ipa
+          rm -rf "$STAGE"; mkdir -p "$STAGE/Payload"
+          cp -R "$APP" "$STAGE/Payload/"
+          APPNAME=$(basename "$APP")
+
+          # Pick the entitlements file for each embedded extension.
+          ent_for() { # $1 = path to .app/.appex
+            case "$1" in
+              *ShareExtension*)  echo "ShareExtension/ShareExtension.entitlements" ;;
+              *FileProvider*)    echo "FileProvider/FileProvider.entitlements" ;;
+              *AgentWidget*)     echo "AgentWidget/AgentWidget.entitlements" ;;
+              *)                 echo "Minis.entitlements" ;;
+            esac
+          }
+
+          # Sign every Mach-O in the bundle (app, appexes, frameworks).
+          while IFS= read -r bin; do
+            owner=$(dirname "$bin")
+            while [[ "$owner" != *.app && "$owner" != *.appex && "$owner" != /* ]]; do owner=$(dirname "$owner"); done
+            ENT=$(ent_for "$owner")
+            echo "ldid -S$ENT  <-  $bin"
+            ldid "-S$ENT" "$bin"
+          done < <(find "$STAGE/Payload" -type f -exec file {} + | grep "Mach-O" | cut -d: -f1)
+
+          cd "$STAGE"
+          zip -qry ../nanoMuse.ipa Payload
+          ls -lh ../nanoMuse.ipa
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nanoMuse-ipa-${{ github.run_number }}
+          path: android/src/ios/build/nanoMuse.ipa
+          retention-days: 30
